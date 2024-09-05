@@ -55,8 +55,6 @@ function createTodoElement(todo, index) {
                     <polygon fill="none" points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                     </svg>
                 </button>
-
-                </button>
                 <button class="delete-button">
                     <svg fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                         <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
@@ -71,6 +69,11 @@ function createTodoElement(todo, index) {
   todoLI.addEventListener("dragover", (e) => onDragOver(e));
   todoLI.addEventListener("drop", (e) => onDrop(e, index));
   todoLI.addEventListener("dragleave", (e) => onDragLeave(e));
+
+  // Add touch event listeners
+  todoLI.addEventListener("touchstart", (e) => onTouchStart(e, index));
+  todoLI.addEventListener("touchmove", onTouchMove);
+  todoLI.addEventListener("touchend", onTouchEnd);
 
   return todoLI;
 }
@@ -180,3 +183,59 @@ function onDragLeave(e) {
 document.addEventListener("dragend", (e) => {
   e.target.classList.remove("dragging");
 });
+
+// Touch-based Drag and Drop Functions
+function onTouchStart(e, index) {
+  draggedIndex = index;
+  e.target.classList.add("dragging"); // Add class when dragging starts
+}
+
+function onTouchMove(e) {
+  e.preventDefault(); // Prevent default behavior to avoid unintended scrolling
+
+  // Get the touch coordinates
+  const touch = e.touches[0];
+  const touchX = touch.clientX;
+  const touchY = touch.clientY;
+
+  // Find the element at the touch position
+  const target = document.elementFromPoint(touchX, touchY);
+
+  if (target && target.classList.contains("todo")) {
+    target.classList.add("dragging");
+    // Optionally, you can adjust the position of the dragged element here
+  }
+}
+
+function onTouchEnd(e) {
+  e.preventDefault(); // Prevent default behavior
+
+  const touch = e.changedTouches[0];
+  const touchX = touch.clientX;
+  const touchY = touch.clientY;
+
+  // Find the element at the touch position
+  const target = document.elementFromPoint(touchX, touchY);
+
+  if (target && target.classList.contains("todo")) {
+    // Get the index of the target item
+    const targetIndex = Array.from(todoListUL.children).indexOf(target);
+
+    // Handle the drop logic
+    const fromIndex = draggedIndex;
+    if (fromIndex === targetIndex) return; // Do nothing if the item is dropped on itself
+
+    // Reorder todos array
+    const [movedTodo] = allTodos.splice(fromIndex, 1);
+    allTodos.splice(targetIndex, 0, movedTodo);
+    saveTodos();
+    renderTodos();
+  }
+
+  // Remove the dragging class from all elements
+  document.querySelectorAll(".todo").forEach((todo) => {
+    todo.classList.remove("dragging");
+  });
+
+  draggedIndex = null; // Reset dragged index
+}
