@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="icon" type="image/png" href="../images/favicon.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=cabinet-grotesk@300,400,700,800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <section class="section">
+      <h1>Todo App</h1>
+      <div class="wrapper">
+        <form>
+          <input
+            id="todo-input"
+            type="text"
+            placeholder="Write your todo and hit enter to add"
+            autocomplete="off"
+          />
+          <button id="add-button">ADD</button>
+        </form>
+        <ul id="todo-list"></ul>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Created by
+        <a href="https://github.com/Gitju002" target="_blank">@Gitju002</a>
+      </p>
+      <p>
+        Features: Stores data in your local storage, Drag and Drop rearrange,
+        Edit todos, Delete Todos
+      </p>
+    </footer>
+  </body>
+</html>
